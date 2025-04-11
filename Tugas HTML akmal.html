@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Uploader dengan Teks Berjalan</title>
+    <style>
+        body { /* backgorund utama konten */
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            max-width: 2000px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #001aff;
+        }
+        h1 { font-weight: bold ; /* untuk type huruf di h1 */
+            color: #000000;
+            text-align: center;
+        }
+        .container { /* kotak yang mewakali isi semua konten dibentuk dalam kotak atau kontainer seperti pinggiran */
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgb(255, 255, 255);
+        }
+        .form-group { /* jarak antara tabel unggah video dan choise file 1set */
+            margin-bottom: 15px;
+        }
+        label { /* jarak antara tabek unggah dan choise file */
+            display: inline-block;
+            margin-bottom: 5px;
+            font-weight: bolder;
+        }
+        input[type="file"] { /* kotak untuk input gambar video dll*/
+            width: 50%;
+            padding: 8px; /* urutan margin > border> padding>conten */
+            border: 2px solid #000000;
+            border-radius: 3px;
+        }
+        .preview { 
+            margin-top: 10px;
+            text-align: center;
+        }
+        .preview img, .preview video, .preview audio { /*jarak tampilan video/gambar yang sudah di input */
+            max-width: 500%; /* ukuran seberapa besar gambar / video yang di tampilkan semakin besar nilai semakin besar tampilan */
+            margin-top: 10px;
+        }
+        .marquee-container { /* container teks berjalan */
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 4px;
+        }
+        .marquee-text {
+            font-size: 30px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tugas Pemrograman Web Akmal
+            dengan tema Pengalaman berkesan
+        </h1>
+        <body>
+            <h2>Penglaman berkesan dalam hidup menang banyak sekali</h2>
+            <p>Tapi yang paling berkesan dalam hidup ini bisa di hitung dalam hitungan jari</p>
+            <p>seperti ketika kita mendapatkan gaji pertama kali , tanggal gajian , hari libur , jalana jalan refreshing belanja main game </p>
+            <p>pengalaman berkesan kita dapat dari perjalanan hidup kita sehari hari, dimana kah letaknya paling berkesan?</p>
+            <p>yak betul itu yang paling kamu ingat sampai saat ini dan tidak bisa melupakannya tapi yang bikin kamu seneng bukan nangis yak
+                klo nangis itu mah pengalaman paling buruk hehe
+            </p>
+            <p>karena saya bingung pilih foto atau videonya jadi saya input manual saja ya hehehe yang lokal pastinya karena dikampus
+                ga dapat sinyal hehehe
+            </p>
+        </body>
+        
+        <!-- Program untuk mengunggah media -->
+        <div class="form-group">  <!--untuk mengelompokkan elemen terkait video
+            Class form-group digunakan untuk memanggil styling yang sudah kita  buat tadi (margin, padding, dll.) -->
+            
+            <label for="video">Unggah Video:</label> <!--memberi label atau keterangan pada elemen input, seperti teks box,video dll-->
+            
+            <input type="file" id="video" accept="video/*"> <!-- input type data yang di pakai file,id atau identifier unik ,
+            accept untuk mengunci atau membatasi tipe format file seperti .mp4-->
+            
+            <div class="preview" id="video-preview"></div> <!--Tempat untuk menampilkan preview video setelah dipilih.-->
+        </div>
+        
+        <div class="form-group">
+            <label for="image">Unggah Gambar:</label>
+            <input type="file" id="image" accept="image/*">
+            <div class="preview" id="image-preview"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="audio">Unggah Suara:</label>
+            <input type="file" id="audio" accept="audio/*">
+            <div class="preview" id="audio-preview"></div>
+        </div>
+        
+        <div class="form-group">
+            
+            <label for="marquee-text">Teks Berjalan:</label> <!--Marque teks menampilkan teks bergerak-->
+            <input type="text" id="marquee-text" placeholder="Masukkan teks untuk ditampilkan berjalan" style="width: 100%; padding: 8px;">
+            <button onclick="updateMarquee()">Perbarui Teks Berjalan</button>
+            <div class="marquee-container"> <!--menunjuk teks marque container tadi yang di update-->
+                <marquee scrollamount="20" class="marquee-text" id="marquee-display" behavior="scroll" direction="left">
+                    Numpang Lewat Pasang iklan di Direct lokal Siapa tau minat? chat 08999999999
+                </marquee>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menangani unggahan video
+        document.getElementById('video').addEventListener('change', function(e) { 
+        //  document.getElementById('video'): Mengambil elemen HTML dengan id "video" (biasanya ini adalah <input type="file">)
+            // aaddEventListener'change'Menambahkan event listener untuk event 'change' Event ini akan terpicu ketika user memilih file 
+
+            // function: Kata kunci yang mendefinisikan sebuah fungsi dalam JavaScript. 
+// (e): Parameter fungsi yang menerima objek peristiwa (event object). Objek ini berisi berbagai informasi terkait peristiwa yang terjadi
+
+            const file = e.target.files[0]; //Mengambil file pertama yang dipilih user melalui input file e adalah event dari input file
+            //file adalah array dari file yang dipilih
+            if (file) { // Pengecekan if (file) untuk Memastikan ada file yang dipilih sebelum memproses lebih lanjut
+                const videoURL = URL.createObjectURL(file); //URL.createObjectURL(file):
+// Membuat URL sementara untuk file video yang dipilih
+// URL ini bisa digunakan sebagai sumber (source) untuk elemen video
+                document.getElementById('video-preview').innerHTML = `
+                    <video controls width="400"> 
+                        <source src="${videoURL}" type="${file.type}"> 
+                        Browser Anda tidak mendukung tag video.
+                    </video>
+                    <p>${file.name}</p>
+                `;  
+            }
+        });
+
+        // Menangani unggahan gambar
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const imageURL = URL.createObjectURL(file);
+                document.getElementById('image-preview').innerHTML = `
+                    <img src="${imageURL}" alt="Preview Gambar" width="400">
+                    <p>${file.name}</p>
+                `;
+            }
+        });
+
+        // Menangani unggahan audio
+        document.getElementById('audio').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const audioURL = URL.createObjectURL(file);
+                document.getElementById('audio-preview').innerHTML = `
+                    <audio controls>
+                        <source src="${audioURL}" type="${file.type}">
+                        Browser Anda tidak mendukung tag audio.
+                    </audio>
+                    <p>${file.name}</p>
+                `;
+            }
+        });
+
+        // Fungsi untuk memperbarui teks berjalan
+        function updateMarquee() {
+            const text = document.getElementById('marquee-text').value;
+            if (text.trim() !== '') {
+                document.getElementById('marquee-display').innerHTML = text;
+            } else {
+                alert('Silakan masukkan teks terlebih dahulu!');
+            }
+        }
+    </script>
+</body>
+</html>
